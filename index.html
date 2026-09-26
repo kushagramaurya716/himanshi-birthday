@@ -183,11 +183,32 @@
         runAsync().start();
 
         // Himanshi was born on 29 July 2009.
-        // The counter shows the total time since the start of that birthday.
+        // Standalone counter so it does not depend on the original site's timer.
         var birthDate = new Date(2009, 6, 29, 0, 0, 0);
+
         function updateAgeCounter() {
-            timeElapse(birthDate);
+            var now = new Date();
+            var elapsed = Math.max(0, Math.floor((now.getTime() - birthDate.getTime()) / 1000));
+
+            var days = Math.floor(elapsed / 86400);
+            elapsed = elapsed % 86400;
+
+            var hours = Math.floor(elapsed / 3600);
+            elapsed = elapsed % 3600;
+
+            var minutes = Math.floor(elapsed / 60);
+            var seconds = elapsed % 60;
+
+            var clock = document.getElementById("clock");
+            if (clock) {
+                clock.innerHTML =
+                    'Days <span class="digit">' + days + '</span> ' +
+                    'Hours <span class="digit">' + String(hours).padStart(2, "0") + '</span> ' +
+                    'Minutes <span class="digit">' + String(minutes).padStart(2, "0") + '</span> ' +
+                    'Seconds <span class="digit">' + String(seconds).padStart(2, "0") + '</span>';
+            }
         }
+
         updateAgeCounter();
         setInterval(updateAgeCounter, 1000);
     })();
