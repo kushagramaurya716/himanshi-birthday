@@ -20,6 +20,30 @@
             audio.play();
         }
     </script>
+
+<style id="mobile-heart-fix">
+@media (max-width: 700px) {
+  #canvas {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #heart-tap-area {
+    position: absolute;
+    z-index: 100000;
+    width: 42vw;
+    height: 42vw;
+    max-width: 300px;
+    max-height: 300px;
+    left: 50%;
+    top: 12%;
+    transform: translateX(-50%);
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+}
+</style>
+
 </head>
 <body>
     <div id="main">
@@ -43,7 +67,8 @@
                 </div>
             </div>
             <div id="message-box"></div>
-            <canvas id="canvas" width="1100" height="680"></canvas>
+            <div id="heart-tap-area" aria-label="Tap the heart to start"></div>
+<canvas id="canvas" width="1100" height="680"></canvas>
             <div id="clock-box">
                 <span id="clock">Loading age...</span>
             </div>
@@ -213,5 +238,41 @@
         setInterval(updateAgeCounter, 1000);
     })();
     </script>
+
+<script id="mobile-heart-handler">
+(function () {
+  function activateHeart(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    if (typeof playAudio === "function") {
+      try { playAudio(); } catch (e) {}
+    }
+
+    var canvas = document.getElementById("canvas");
+    if (canvas) {
+      try {
+        canvas.dispatchEvent(new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          clientX: window.innerWidth / 2,
+          clientY: window.innerHeight * 0.28
+        }));
+      } catch (e) {
+        try { canvas.click(); } catch (ignored) {}
+      }
+    }
+  }
+
+  var area = document.getElementById("heart-tap-area");
+  if (area) {
+    area.addEventListener("pointerup", activateHeart, { passive: false });
+    area.addEventListener("touchend", activateHeart, { passive: false });
+  }
+})();
+</script>
+
 </body>
 </html>
