@@ -20,6 +20,30 @@
             audio.play();
         }
     </script>
+
+<style id="mobile-heart-fix">
+@media (max-width: 700px) {
+  #canvas {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #heart-tap-area {
+    position: absolute;
+    z-index: 100000;
+    width: 42vw;
+    height: 42vw;
+    max-width: 300px;
+    max-height: 300px;
+    left: 50%;
+    top: 12%;
+    transform: translateX(-50%);
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+}
+</style>
+
 </head>
 <body>
     <div id="main">
@@ -42,6 +66,7 @@
                     <div class="message-page"><span class="say">Happy Birthday once again Butkiiiii!! 🫂🤍<br><br>Have an amazing year ahead. Proud of u... always.(hnn byy sach meh🤧) ❤️</span></div>
                 </div>
             </div>
+<div id="heart-tap-area" aria-label="Tap the heart to start"></div>
 <canvas id="canvas" width="1100" height="680"></canvas>
             <div id="message-box">THE WORLD JUST GOT LUCKIER SINCE</div>
 <div id="clock-box">
@@ -104,26 +129,31 @@
         var seed = tree.seed;
         var foot = tree.footer;
         var hold = 1;
-        window.seed = seed;
-        window.hold = hold;
+
+        function startBirthdayAnimation() {
+            playAudio();
+            hold = 0;
+            window.hold = 0;
+            canvas.unbind("click");
+            canvas.unbind("mousemove");
+            canvas.removeClass("hand");
+        }
 
         canvas.click(function(e) {
-            playAudio();
             var offset = canvas.offset(), x, y;
             x = e.pageX - offset.left;
             y = e.pageY - offset.top;
             if (seed.hover(x, y)) {
-                hold = 0; window.hold = 0;
-                canvas.unbind("click");
-                canvas.unbind("mousemove");
-                canvas.removeClass('hand');
+                startBirthdayAnimation();
             }
         }).mousemove(function(e) {
             var offset = canvas.offset(), x, y;
             x = e.pageX - offset.left;
             y = e.pageY - offset.top;
-            canvas.toggleClass('hand', seed.hover(x, y));
+            canvas.toggleClass("hand", seed.hover(x, y));
         });
+
+        window.startBirthdayAnimation = startBirthdayAnimation;
 
         var seedAnimate = eval(Jscex.compile("async", function () {
             seed.draw();
@@ -216,59 +246,25 @@
     })();
     </script>
 
-<script id="mobile-heart-real-handler">
+<script id="mobile-heart-definitive-handler">
 (function () {
   var canvas = document.getElementById("canvas");
   if (!canvas) return;
 
-  function getCanvasPoint(e) {
-    var rect = canvas.getBoundingClientRect();
-    var touch = e.touches && e.touches.length ? e.touches[0] : e;
-    return {
-      x: (touch.clientX - rect.left) * (1100 / rect.width),
-      y: (touch.clientY - rect.top) * (680 / rect.height)
-    };
-  }
-
-  function activate(e) {
+  function startFromPhone(e) {
     if (e && e.cancelable) e.preventDefault();
-
-    var p = getCanvasPoint(e);
-
-    // The original animation waits for hold to become 0 only when the
-    // actual seed/heart is tapped. Call the original seed test directly,
-    // using coordinates converted from the phone's scaled canvas.
-    if (window.seed && typeof window.seed.hover === "function") {
-      if (window.seed.hover(p.x, p.y)) {
-        window.hold = 0;
-        if (window.jQuery) {
-          try {
-            window.jQuery(canvas).unbind("click");
-            window.jQuery(canvas).unbind("mousemove");
-            window.jQuery(canvas).removeClass("hand");
-          } catch (ignore) {}
-        }
-        if (typeof playAudio === "function") {
-          try { playAudio(); } catch (ignore) {}
-        }
-        return;
-      }
+    if (typeof window.startBirthdayAnimation === "function") {
+      window.startBirthdayAnimation();
     }
-
-    // Fallback: trigger the original click with correctly scaled coordinates.
-    try {
-      var ev = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        clientX: e.clientX || window.innerWidth / 2,
-        clientY: e.clientY || window.innerHeight / 3
-      });
-      canvas.dispatchEvent(ev);
-    } catch (ignore) {}
   }
 
-  canvas.style.touchAction = "none";
-  canvas.addEventListener("touchend", activate, { passive: false });
+  canvas.addEventListener("touchend", startFromPhone, { passive: false });
+  canvas.addEventListener("pointerup", function (e) {
+    if (e.pointerType === "touch") startFromPhone(e);
+  }, { passive: false });
+
+  canvas.style.touchAction = "manipulation";
+  canvas.style.webkitTapHighlightColor = "transparent";
 })();
 </script>
 
