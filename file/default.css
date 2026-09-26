@@ -248,3 +248,13 @@ a { color: white; font-size: 14px; }
     touch-action: manipulation !important;
   }
 }
+
+#canvas {
+  pointer-events: auto !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+@media (max-width: 1100px) {
+  #canvas {
+    touch-action: none !important;
+  }
+}
