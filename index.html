@@ -20,30 +20,6 @@
             audio.play();
         }
     </script>
-
-<style id="mobile-heart-fix">
-@media (max-width: 700px) {
-  #canvas {
-    touch-action: manipulation !important;
-    -webkit-tap-highlight-color: transparent;
-  }
-  #heart-tap-area {
-    position: absolute;
-    z-index: 100000;
-    width: 42vw;
-    height: 42vw;
-    max-width: 300px;
-    max-height: 300px;
-    left: 50%;
-    top: 12%;
-    transform: translateX(-50%);
-    background: transparent;
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-}
-</style>
-
 </head>
 <body>
     <div id="main">
@@ -66,7 +42,6 @@
                     <div class="message-page"><span class="say">Happy Birthday once again Butkiiiii!! 🫂🤍<br><br>Have an amazing year ahead. Proud of u... always.(hnn byy sach meh🤧) ❤️</span></div>
                 </div>
             </div>
-<div id="heart-tap-area" aria-label="Tap the heart to start"></div>
 <canvas id="canvas" width="1100" height="680"></canvas>
             <div id="message-box">THE WORLD JUST GOT LUCKIER SINCE</div>
 <div id="clock-box">
@@ -239,38 +214,44 @@
     })();
     </script>
 
-<script id="mobile-heart-handler">
+<script id="mobile-heart-direct-handler">
 (function () {
-  function activateHeart(event) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  var canvas = document.getElementById("canvas");
+  if (!canvas) return;
 
+  var touchStarted = false;
+
+  function startInteraction(e) {
+    touchStarted = true;
+    if (e && e.cancelable) e.preventDefault();
+
+    // The original page already has the animation on canvas click.
+    // Call it directly when available.
     if (typeof playAudio === "function") {
-      try { playAudio(); } catch (e) {}
+      try { playAudio(); } catch (err) {}
     }
 
-    var canvas = document.getElementById("canvas");
-    if (canvas) {
-      try {
-        canvas.dispatchEvent(new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-          clientX: window.innerWidth / 2,
-          clientY: window.innerHeight * 0.28
-        }));
-      } catch (e) {
-        try { canvas.click(); } catch (ignored) {}
-      }
+    try {
+      canvas.click();
+    } catch (err) {}
+
+    // If the original click handler is attached through jQuery, dispatch
+    // both a native click and a jQuery-compatible event when jQuery exists.
+    if (window.jQuery) {
+      try { window.jQuery(canvas).trigger("click"); } catch (err) {}
     }
   }
 
-  var area = document.getElementById("heart-tap-area");
-  if (area) {
-    area.addEventListener("pointerup", activateHeart, { passive: false });
-    area.addEventListener("touchend", activateHeart, { passive: false });
+  function endInteraction(e) {
+    if (touchStarted && e && e.cancelable) e.preventDefault();
+    touchStarted = false;
   }
+
+  canvas.style.touchAction = "manipulation";
+  canvas.style.webkitTapHighlightColor = "transparent";
+
+  canvas.addEventListener("touchstart", startInteraction, { passive: false });
+  canvas.addEventListener("touchend", endInteraction, { passive: false });
 })();
 </script>
 
