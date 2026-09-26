@@ -1,0 +1,209 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('../img2.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-attachment: fixed;
+  font-size: 14px;
+  font-family: sans-serif;
+  color: white;
+  overflow-x: hidden;
+}
+
+a { color: white; font-size: 14px; }
+#main { width: 100%; }
+
+#wrap {
+  position: relative;
+  margin: 0 auto;
+  width: 1100px;
+  min-height: 1080px;
+  background-repeat: no-repeat !important;
+  background-position: center top !important;
+  background-size: 1100px 680px !important;
+}
+
+#canvas {
+  display: block;
+  margin: 0 auto;
+  width: 1100px;
+  height: 680px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+/* The original animation finishes with the tree on the right.
+   Keep the title and counter above the message, and put the long message
+   in a small internal scroll box on the left. */
+#message-box {
+  position: absolute;
+  left: 0;
+  top: 16px;
+  width: 1100px;
+  height: 30px;
+  display: block !important;
+  z-index: 50;
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  line-height: 30px;
+  font-family: monospace;
+  text-shadow: 2px 2px 4px #000;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#clock-box {
+  position: absolute;
+  left: 0;
+  top: 48px;
+  width: 1100px;
+  font-size: 16px;
+  display: block !important;
+  z-index: 50;
+  color: #fff;
+  white-space: nowrap;
+  visibility: visible !important;
+  text-align: center;
+  text-shadow: 1px 1px 3px #000;
+  pointer-events: none;
+}
+
+#clock-box a { font-size: 16px; text-decoration: none; }
+#clock { margin-left: 0; display: inline-block; color: #fff; visibility: visible !important; }
+#clock .digit {
+  font-size: 30px;
+  color: #fff;
+  display: inline-block;
+  min-width: 1.1em;
+  text-align: center;
+}
+
+#text {
+  position: absolute;
+  left: 48px;
+  top: 185px;
+  width: 420px;
+  height: 350px;
+  z-index: 40;
+  box-sizing: border-box;
+}
+
+/* Only this box scrolls. The page itself does not need to move. */
+#code {
+  display: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 22px 24px;
+  color: rgb(196, 255, 255);
+  font-size: 16px;
+  line-height: 25px;
+  font-weight: bolder;
+  text-shadow: 1px 1px 3px #000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: normal;
+  scrollbar-width: thin;
+  background: rgba(0, 0, 35, 0.38);
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+
+#code::-webkit-scrollbar { width: 7px; }
+#code::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.45); border-radius: 8px; }
+
+.message-page {
+  display: block;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  margin: 0 0 22px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  text-align: left;
+  white-space: normal;
+}
+
+.message-page:last-child { margin-bottom: 0; }
+.message-page .say { margin-left: 0; }
+
+#error { margin: 0 auto; text-align: center; margin-top: 60px; display: none; }
+.hand { cursor: pointer; }
+.say { margin-left: 5px; }
+.space { margin-right: 150px; }
+
+@media (max-width: 1100px) {
+  body {
+    overflow: hidden;
+    background-attachment: fixed;
+  }
+
+  #wrap {
+    width: 100vw;
+    height: 100vw;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    background-size: 100vw 61.818vw !important;
+    background-position: center top !important;
+    background-repeat: no-repeat !important;
+  }
+
+  #canvas {
+    width: 100vw !important;
+    height: 61.818vw !important;
+    left: 0;
+    top: 0;
+  }
+
+  #message-box {
+    top: 4px;
+    width: 100vw;
+    height: 22px;
+    font-size: clamp(10px, 2.8vw, 18px);
+    line-height: 22px;
+  }
+
+  #clock-box {
+    top: 27px;
+    width: 100vw;
+    font-size: clamp(8px, 2.3vw, 16px);
+  }
+
+  #clock-box a { font-size: inherit; }
+  #clock .digit { font-size: clamp(16px, 4.5vw, 28px); }
+
+  /* The tree stays on the right; the message box occupies the left side. */
+  #text {
+    left: 3vw;
+    top: 18vw;
+    width: 43vw;
+    height: 38vw;
+  }
+
+  #code {
+    width: 100%;
+    height: 100%;
+    padding: 3vw 2.5vw;
+    font-size: clamp(10px, 2.65vw, 15px);
+    line-height: 1.55;
+    border-radius: 9px;
+  }
+
+  .message-page {
+    margin-bottom: 4vw;
+  }
+}
+#error { margin: 0 auto; text-align: center; margin-top: 60px; display: none; }
+.hand { cursor: pointer; }
+.say { margin-left: 5px; }
+.space { margin-right: 150px; }
